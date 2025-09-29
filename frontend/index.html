@@ -449,6 +449,8 @@
                 <div class="pagination-controls">
                     <button id="prevPage" onclick="changePage(-1)">← Anterior</button>
                     <span id="pageInfo">Página 1 de 1</span>
+                    <input type="number" id="gotoPageInput" min="1" style="width:60px; margin:0 8px;" placeholder="Ir para" onkeydown="if(event.key==='Enter'){gotoPage()}">
+                    <button onclick="gotoPage()">Ir</button>
                     <button id="nextPage" onclick="changePage(1)">Próximo →</button>
                 </div>
                 <div class="pagination-controls">
@@ -741,6 +743,23 @@
             document.getElementById('pageInfo').textContent = `Página ${currentPage} de ${totalPages}`;
             document.getElementById('prevPage').disabled = currentPage <= 1;
             document.getElementById('nextPage').disabled = currentPage >= totalPages;
+            // Atualiza o valor e limite do input de página
+            const gotoInput = document.getElementById('gotoPageInput');
+            if (gotoInput) {
+                gotoInput.value = '';
+                gotoInput.max = totalPages;
+            }
+        }
+        function gotoPage() {
+            const gotoInput = document.getElementById('gotoPageInput');
+            let page = parseInt(gotoInput.value);
+            if (!isNaN(page) && page >= 1 && page <= totalPages) {
+                currentPage = page;
+                loadData();
+            } else {
+                gotoInput.value = '';
+                gotoInput.placeholder = `1-${totalPages}`;
+            }
         }
 
         function changePage(delta) {
