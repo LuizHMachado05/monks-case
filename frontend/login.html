@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Monks Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #fff;
+            color: #222;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 400px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #222;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .logo p {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #222;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #bbb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #fff;
+            color: #222;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #222;
+            background-color: #f4f4f4;
+            box-shadow: 0 0 0 3px rgba(34,34,34,0.08);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: #222;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            background: #444;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(34,34,34,0.08);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading::after {
+            content: "";
+            width: 20px;
+            height: 20px;
+            border: 2px solid #eee;
+            border-top: 2px solid #222;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #222;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c2c7;
+            display: none;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .demo-users {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #bbb;
+        }
+
+        .demo-users h3 {
+            color: #222;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .demo-user {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .demo-user:hover {
+            background: #e0e0e0;
+            transform: translateX(5px);
+        }
+
+        .demo-user strong {
+            color: #222;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <h1>🚀 Monks</h1>
+            <p>Marketing Dashboard</p>
+        </div>
+
+        <div class="error" id="errorMessage"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Usuário</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="login-btn" id="loginBtn">
+                <span class="btn-text">Entrar</span>
+                <div class="loading" id="loading"></div>
+            </button>
+        </form>
+
+        <div class="demo-users">
+            <h3>👨‍💼 Usuários de Demonstração:</h3>
+            <div class="demo-user" onclick="fillCredentials('user1', 'oeiruhn56146')">
+                <strong>Admin:</strong> user1 / oeiruhn56146
+            </div>
+            <div class="demo-user" onclick="fillCredentials('user2', '908ijofff')">
+                <strong>Usuário:</strong> user2 / 908ijofff
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8000';
+        
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await handleLogin();
+        });
+
+        async function handleLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const errorDiv = document.getElementById('errorMessage');
+            const loginBtn = document.getElementById('loginBtn');
+            const btnText = document.querySelector('.btn-text');
+            const loading = document.getElementById('loading');
+
+            // Validação básica
+            if (!username || !password) {
+                showError('Por favor, preencha todos os campos');
+                return;
+            }
+
+            // Estado de loading
+            loginBtn.disabled = true;
+            btnText.style.display = 'none';
+            loading.style.display = 'flex';
+            hideError();
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Salvar token e informações do usuário
+                    sessionStorage.setItem('access_token', data.access_token);
+                    sessionStorage.setItem('user_info', JSON.stringify(data.user));
+                    
+                    // Feedback visual de sucesso
+                    loginBtn.style.background = 'linear-gradient(135deg, #48bb78 0%, #38a169 100%)';
+                    btnText.textContent = '✓ Sucesso!';
+                    btnText.style.display = 'block';
+                    loading.style.display = 'none';
+                    
+                    // Redirecionar após um breve delay
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1000);
+                } else {
+                    showError(data.detail || 'Erro ao fazer login');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showError('Erro de conexão. Verifique se o backend está rodando.');
+            } finally {
+                // Resetar botão se houve erro
+                if (loginBtn.disabled) {
+                    setTimeout(() => {
+                        loginBtn.disabled = false;
+                        btnText.style.display = 'block';
+                        btnText.textContent = 'Entrar';
+                        loading.style.display = 'none';
+                        loginBtn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    }, 2000);
+                }
+            }
+        }
+
+        function fillCredentials(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+            
+            // Animate the inputs
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach((input, index) => {
+                setTimeout(() => {
+                    input.style.transform = 'scale(1.02)';
+                    input.style.borderColor = '#667eea';
+                    setTimeout(() => {
+                        input.style.transform = 'scale(1)';
+                        input.style.borderColor = '#e1e5e9';
+                    }, 200);
+                }, index * 100);
+            });
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        // Verificar se já está logado
+        window.addEventListener('load', () => {
+            const token = sessionStorage.getItem('access_token');
+            if (token) {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>
