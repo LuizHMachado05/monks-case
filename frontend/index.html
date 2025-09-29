@@ -405,6 +405,13 @@
                     </select>
                 </div>
                 <div class="filter-group">
+                    <label for="sortOrder">Ordem</label>
+                    <select id="sortOrder">
+                        <option value="asc">Crescente (A→Z ou 0→9)</option>
+                        <option value="desc">Decrescente (Z→A ou 9→0)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
                     <button class="apply-btn" onclick="applyFilters()">
                         🔄 Aplicar Filtros
                     </button>
@@ -559,6 +566,9 @@
 
         function applyFilters() {
             currentPage = 1;
+            // Atualiza o estado de ordenação conforme o seletor
+            const sortOrder = document.getElementById('sortOrder').value;
+            currentSort.desc = (sortOrder === 'desc');
             loadData();
         }
 
@@ -571,11 +581,16 @@
                 const startDate = document.getElementById('startDate').value;
                 const endDate = document.getElementById('endDate').value;
                 const sortBy = document.getElementById('sortBy').value;
+                const sortOrder = document.getElementById('sortOrder').value;
+
+                // Atualiza o estado de ordenação global
+                currentSort.column = sortBy;
+                currentSort.desc = (sortOrder === 'desc');
 
                 const params = new URLSearchParams();
                 if (startDate) params.append('start_date', startDate);
                 if (endDate) params.append('end_date', endDate);
-                params.append('sort_by', currentSort.column || sortBy);
+                params.append('sort_by', currentSort.column);
                 params.append('sort_desc', currentSort.desc);
                 params.append('page', currentPage);
                 params.append('page_size', pageSize);
@@ -695,11 +710,15 @@
 
         function sortBy(column) {
             if (currentSort.column === column) {
+                // Alterna a ordem se clicar na mesma coluna
                 currentSort.desc = !currentSort.desc;
             } else {
                 currentSort.column = column;
                 currentSort.desc = false;
             }
+
+            // Atualiza o seletor visual de ordem
+            document.getElementById('sortOrder').value = currentSort.desc ? 'desc' : 'asc';
 
             document.querySelectorAll('th').forEach(th => {
                 th.className = 'sortable';
